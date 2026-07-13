@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Сабир Мамуров — AI-системы, которые приносят измеримые деньги</title>
+<meta name="description" content="Full-stack разработчик и AI-специалист полного цикла. 8 production-систем за 4 месяца. От интервью с бизнесом до deploy и замера экономического эффекта.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B0E0C;
+    --ink-2:#0E120F;
+    --panel:rgba(236,231,219,.022);
+    --panel-2:rgba(236,231,219,.04);
+    --line:rgba(233,225,209,.12);
+    --line-soft:rgba(233,225,209,.065);
+    --text:#ECE7DB;
+    --muted:#949A8C;
+    --faint:#666B60;
+    --brass:#C79A54;
+    --brass-bright:#E7BD6C;
+    --sage:#A6BAA6;
+    --maxw:1180px;
+    --ease:cubic-bezier(.22,.61,.36,1);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--ink);
+    color:var(--text);
+    font-family:"Inter",system-ui,sans-serif;
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+    position:relative;
+  }
+  /* subtle grain + ambient cedar glow */
+  body::before{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(1100px 700px at 78% -8%, rgba(199,154,84,.10), transparent 60%),
+      radial-gradient(900px 600px at -5% 12%, rgba(90,120,96,.09), transparent 55%);
+  }
+  body::after{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.035;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 32px;position:relative;z-index:2}
+
+  ::selection{background:rgba(199,154,84,.28);color:#fff}
+  a{color:inherit;text-decoration:none}
+
+  .mono{font-family:"JetBrains Mono",monospace;font-feature-settings:"tnum" 1}
+  .serif{font-family:"Fraunces",serif}
+  /* keep Fraunces soft & even-weighted — low optical size avoids thin display hairlines */
+  .brand,.sec-head h2,h1.hero-title,.agg-val,.svc h3,.work-name,.lg-to,.flow-step h4,.cta-box h2,.serif{
+    font-optical-sizing:none;
+    font-variation-settings:"opsz" 34;
+  }
+
+  /* ---------- eyebrow / tick label ---------- */
+  .eyebrow{
+    font-family:"JetBrains Mono",monospace;
+    font-size:11.5px;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--brass);display:inline-flex;align-items:center;gap:12px;
+  }
+  .eyebrow::before{content:"";width:26px;height:1px;background:var(--brass);opacity:.7}
+
+  /* ---------- top bar ---------- */
+  header{
+    position:fixed;top:0;left:0;right:0;z-index:50;
+    transition:background .4s var(--ease),border-color .4s;
+    border-bottom:1px solid transparent;
+  }
+  header.scrolled{
+    background:rgba(11,14,12,.72);backdrop-filter:blur(14px) saturate(120%);
+    border-bottom:1px solid var(--line-soft);
+  }
+  .bar{display:flex;align-items:center;justify-content:space-between;height:74px}
+  .brand{display:flex;align-items:center;gap:12px;font-family:"Fraunces",serif;font-weight:600;letter-spacing:.02em}
+  .monogram{
+    width:34px;height:34px;border:1px solid var(--brass);border-radius:50%;
+    display:grid;place-items:center;font-size:12px;letter-spacing:.05em;color:var(--brass);
+    font-family:"JetBrains Mono",monospace;
+  }
+  nav.links{display:flex;gap:34px;align-items:center}
+  nav.links a{
+    font-size:13px;color:var(--muted);letter-spacing:.02em;transition:color .25s;position:relative;
+  }
+  nav.links a:hover{color:var(--text)}
+  .bar-right{display:flex;align-items:center;gap:22px}
+
+  .lang{
+    display:inline-flex;border:1px solid var(--line);border-radius:100px;overflow:hidden;
+    font-family:"JetBrains Mono",monospace;font-size:11.5px;
+  }
+  .lang button{
+    background:none;border:none;color:var(--faint);padding:7px 13px;cursor:pointer;
+    letter-spacing:.08em;transition:color .25s,background .35s var(--ease);
+  }
+  .lang button.active{color:var(--ink);background:var(--brass);font-weight:600}
+  .lang button:not(.active):hover{color:var(--text)}
+
+  .btn{
+    display:inline-flex;align-items:center;gap:10px;cursor:pointer;
+    font-size:14px;letter-spacing:.01em;padding:13px 24px;border-radius:100px;
+    border:1px solid var(--brass);color:var(--ink);background:var(--brass);
+    transition:transform .3s var(--ease),background .3s,box-shadow .3s;font-weight:500;
+    white-space:nowrap;
+  }
+  .btn:hover{background:var(--brass-bright);transform:translateY(-2px);box-shadow:0 12px 34px -12px rgba(199,154,84,.55)}
+  .btn .arw{transition:transform .3s var(--ease)}
+  .btn:hover .arw{transform:translate(4px,-4px)}
+  .btn.ghost{background:transparent;color:var(--text);border-color:var(--line)}
+  .btn.ghost:hover{border-color:var(--brass);color:var(--brass-bright);box-shadow:none}
+  .nav-cta{padding:10px 20px;font-size:13px}
+
+  /* ---------- section frame ---------- */
+  section{position:relative;z-index:2;padding:118px 0}
+  .sec-head{display:flex;flex-direction:column;gap:22px;margin-bottom:64px;max-width:760px}
+  .sec-head h2{
+    font-family:"Fraunces",serif;font-weight:500;line-height:1.04;
+    font-size:clamp(30px,5vw,52px);letter-spacing:-.01em;
+  }
+  .sec-head p{color:var(--muted);font-size:clamp(15px,1.5vw,17.5px);max-width:640px}
+
+  /* ---------- HERO ---------- */
+  #hero{padding:150px 0 90px;min-height:100vh;display:flex;align-items:center}
+  @media(max-height:840px){#hero{align-items:flex-start;padding-top:124px}}
+  .hero-grid{display:grid;grid-template-columns:1.55fr .95fr;gap:70px;align-items:end;width:100%}
+  .hero-eyebrow{margin-bottom:30px}
+  h1.hero-title{
+    font-family:"Fraunces",serif;font-weight:500;
+    font-size:clamp(38px,6.6vw,82px);line-height:1.015;letter-spacing:-.018em;
+    margin-bottom:30px;
+  }
+  h1.hero-title .accent{color:var(--brass);font-style:italic;font-weight:600}
+  .hero-sub{font-size:clamp(16px,1.7vw,19px);color:var(--muted);max-width:540px;margin-bottom:42px;line-height:1.62}
+  .hero-cta{display:flex;gap:16px;flex-wrap:wrap}
+
+  /* aggregate ledger card */
+  .agg{
+    border:1px solid var(--line);border-radius:16px;background:var(--panel);
+    padding:8px 26px;backdrop-filter:blur(4px);
+  }
+  .agg-row{
+    display:flex;align-items:baseline;justify-content:space-between;gap:20px;
+    padding:19px 0;border-bottom:1px solid var(--line-soft);
+  }
+  .agg-row:last-child{border-bottom:none}
+  .agg-val{font-family:"Fraunces",serif;font-size:29px;font-weight:600;color:var(--brass-bright);line-height:1}
+  .agg-val.sage{color:var(--sage)}
+  .agg-lbl{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:right;max-width:150px}
+
+  /* ---------- measurement rail (signature) ---------- */
+  .rail{position:absolute;left:0;top:0;bottom:0;width:1px;background:var(--line-soft);z-index:1}
+  .rail::before{
+    content:"";position:absolute;left:0;top:0;bottom:0;width:9px;
+    background-image:repeating-linear-gradient(to bottom,var(--line-soft) 0 1px,transparent 1px 34px);
+  }
+
+  /* ---------- services ---------- */
+  .svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .svc{
+    border:1px solid var(--line);border-radius:16px;background:var(--panel);
+    padding:34px 30px 30px;position:relative;overflow:hidden;
+    transition:transform .4s var(--ease),border-color .4s,background .4s;
+  }
+  .svc::after{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:var(--brass);transform:scaleX(0);transform-origin:left;transition:transform .5s var(--ease)}
+  .svc:hover{transform:translateY(-6px);border-color:rgba(199,154,84,.4);background:var(--panel-2)}
+  .svc:hover::after{transform:scaleX(1)}
+  .svc-num{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--brass);letter-spacing:.1em;margin-bottom:26px;display:block}
+  .svc h3{font-family:"Fraunces",serif;font-weight:600;font-size:22px;line-height:1.18;margin-bottom:14px}
+  .svc p{color:var(--muted);font-size:14.5px;line-height:1.6;margin-bottom:22px}
+  .svc-tags{display:flex;flex-wrap:wrap;gap:7px}
+  .tag{
+    font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.02em;
+    color:var(--muted);border:1px solid var(--line);border-radius:100px;padding:5px 11px;
+  }
+
+  /* ---------- work ---------- */
+  .work-list{display:flex;flex-direction:column;gap:0}
+  .work{
+    display:grid;grid-template-columns:.9fr 1.4fr 1.15fr;gap:44px;
+    padding:44px 0;border-top:1px solid var(--line);align-items:start;
+    transition:background .4s;
+  }
+  .work:last-child{border-bottom:1px solid var(--line)}
+  .work:hover{background:linear-gradient(90deg,rgba(199,154,84,.045),transparent 70%)}
+  .work-id{display:flex;flex-direction:column;gap:14px}
+  .work-index{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--faint);letter-spacing:.1em}
+  .work-name{font-family:"Fraunces",serif;font-size:27px;font-weight:600;line-height:1.1}
+  .work-badge{
+    align-self:flex-start;font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--sage);border:1px solid rgba(166,186,166,.32);
+    border-radius:100px;padding:4px 11px;display:inline-flex;align-items:center;gap:7px;
+  }
+  .work-badge::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--sage)}
+  .work-badge.soon{color:var(--brass);border-color:rgba(199,154,84,.35)}
+  .work-badge.soon::before{background:var(--brass)}
+  .work-body .kicker{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass);margin-bottom:14px}
+  .work-body p{color:var(--muted);font-size:15px;line-height:1.62;margin-bottom:22px}
+  .work-stack{display:flex;flex-wrap:wrap;gap:7px}
+
+  /* ledger metrics */
+  .ledger{display:flex;flex-direction:column;gap:2px}
+  .ledger-hero{
+    border:1px solid var(--line);border-radius:13px;background:var(--panel);padding:18px 20px;margin-bottom:12px;
+  }
+  .ledger-hero .from-to{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+  .lg-from{font-family:"JetBrains Mono",monospace;font-size:14px;color:var(--muted);text-decoration:line-through;text-decoration-color:var(--faint)}
+  .lg-arrow{color:var(--brass);font-size:15px}
+  .lg-to{font-family:"Fraunces",serif;font-size:26px;font-weight:600;color:var(--sage);line-height:1}
+  .lg-delta{
+    font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;color:var(--ink);
+    background:var(--brass);border-radius:100px;padding:3px 10px;letter-spacing:.03em;
+  }
+  .ledger-hero .lg-cap{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .lg-line{display:flex;align-items:baseline;gap:12px;padding:9px 0;border-bottom:1px solid var(--line-soft)}
+  .lg-line:last-child{border-bottom:none}
+  .lg-line .v{font-family:"JetBrains Mono",monospace;font-size:14px;font-weight:600;color:var(--brass-bright);white-space:nowrap}
+  .lg-line .l{font-size:12.5px;color:var(--muted);line-height:1.4}
+
+  /* ---------- stack ---------- */
+  .stack-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0 56px}
+  .stack-row{display:grid;grid-template-columns:150px 1fr;gap:24px;padding:22px 0;border-bottom:1px solid var(--line-soft);align-items:baseline}
+  .stack-cat{font-family:"JetBrains Mono",monospace;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass)}
+  .stack-items{display:flex;flex-wrap:wrap;gap:8px}
+
+  /* ---------- approach ---------- */
+  .flow{display:grid;grid-template-columns:repeat(6,1fr);gap:0;border-top:1px solid var(--line);margin-top:20px}
+  .flow-step{padding:30px 22px 30px 0;position:relative}
+  .flow-step .n{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--brass);letter-spacing:.1em;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+  .flow-step .n::before{content:"";width:7px;height:7px;border-radius:50%;border:1px solid var(--brass);background:var(--ink)}
+  .flow-step h4{font-family:"Fraunces",serif;font-weight:600;font-size:17px;line-height:1.2;margin-bottom:8px}
+  .flow-step p{font-size:12.5px;color:var(--muted);line-height:1.5}
+  .flow-step::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:transparent}
+  .flow-step::after{content:"";position:absolute;top:-4px;left:0;width:7px;height:7px}
+
+  /* ---------- contact ---------- */
+  #contact{padding:120px 0 60px}
+  .cta-box{
+    border:1px solid var(--line);border-radius:22px;
+    background:
+      radial-gradient(700px 300px at 80% 0%,rgba(199,154,84,.12),transparent 60%),
+      var(--panel);
+    padding:70px clamp(32px,6vw,84px);text-align:center;position:relative;overflow:hidden;
+  }
+  .cta-box h2{font-family:"Fraunces",serif;font-weight:500;font-size:clamp(30px,5vw,54px);line-height:1.05;letter-spacing:-.01em;margin-bottom:22px}
+  .cta-box h2 em{color:var(--brass);font-weight:600}
+  .cta-box p{color:var(--muted);font-size:17px;max-width:520px;margin:0 auto 40px}
+  .contacts{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:44px}
+  .contact-chip{
+    display:inline-flex;align-items:center;gap:11px;border:1px solid var(--line);border-radius:100px;
+    padding:12px 22px;font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--text);
+    transition:border-color .3s,color .3s,transform .3s var(--ease);
+  }
+  .contact-chip:hover{border-color:var(--brass);color:var(--brass-bright);transform:translateY(-2px)}
+  .contact-chip span.k{color:var(--faint)}
+
+  footer{padding:44px 0;border-top:1px solid var(--line-soft);position:relative;z-index:2}
+  .foot{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+  .foot p{font-family:"JetBrains Mono",monospace;font-size:11.5px;color:var(--faint);letter-spacing:.05em}
+
+  /* ---------- reveal ---------- */
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+  .reveal.in{opacity:1;transform:none}
+
+  /* ---------- responsive ---------- */
+  @media(max-width:960px){
+    .hero-grid{grid-template-columns:1fr;gap:48px}
+    .svc-grid{grid-template-columns:1fr}
+    .work{grid-template-columns:1fr;gap:26px}
+    .stack-grid{grid-template-columns:1fr;gap:0}
+    .flow{grid-template-columns:repeat(2,1fr)}
+    nav.links{display:none}
+  }
+  @media(max-width:560px){
+    .wrap{padding:0 20px}
+    #hero{padding:140px 0 70px}
+    .bar-right .nav-cta{display:none}
+    .agg-val{font-size:24px}
+    .flow{grid-template-columns:1fr}
+    .contacts{flex-direction:column}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{transition:none!important;animation:none!important;scroll-behavior:auto!important}
+    .reveal{opacity:1;transform:none}
+  }
+</style>
+</head>
+<body>
+<div class="rail" aria-hidden="true"></div>
+
+<header id="top">
+  <div class="wrap bar">
+    <a class="brand" href="#top">
+      <span class="monogram">СМ</span>
+      <span data-i18n="brand">Сабир Мамуров</span>
+    </a>
+    <nav class="links">
+      <a href="#services" data-i18n="nav_services">Услуги</a>
+      <a href="#work" data-i18n="nav_work">Работы</a>
+      <a href="#stack" data-i18n="nav_stack">Стек</a>
+      <a href="#approach" data-i18n="nav_approach">Подход</a>
+    </nav>
+    <div class="bar-right">
+      <div class="lang" role="group" aria-label="Language">
+        <button data-lang="ru" class="active">RU</button>
+        <button data-lang="en">EN</button>
+      </div>
+      <a href="#contact" class="btn nav-cta" data-i18n="nav_cta">Обсудить проект</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section id="hero">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <div class="eyebrow hero-eyebrow" data-i18n="hero_eyebrow">AI-специалист · Full-stack · Томск</div>
+          <h1 class="hero-title" data-i18n-html="hero_title">Строю AI-системы, которые приносят бизнесу <span class="accent">измеримые деньги</span>.</h1>
+          <p class="hero-sub" data-i18n="hero_sub">Full-stack разработчик и AI-специалист полного цикла — от интервью с бизнесом до production и замера экономического эффекта. 8 систем в production за 4 месяца.</p>
+          <div class="hero-cta">
+            <a href="#contact" class="btn" data-i18n-html="hero_cta1">Обсудить проект <span class="arw">↗</span></a>
+            <a href="#work" class="btn ghost" data-i18n="hero_cta2">Смотреть работы</a>
+          </div>
+        </div>
+        <div class="agg reveal">
+          <div class="agg-row">
+            <span class="agg-val sage">−90%</span>
+            <span class="agg-lbl" data-i18n="agg1">ручного труда</span>
+          </div>
+          <div class="agg-row">
+            <span class="agg-val">×90</span>
+            <span class="agg-lbl" data-i18n="agg2">быстрее обработка данных</span>
+          </div>
+          <div class="agg-row">
+            <span class="agg-val">34,1<span style="font-size:15px"> млн ₽</span></span>
+            <span class="agg-lbl" data-i18n="agg3">найденных потерь в год</span>
+          </div>
+          <div class="agg-row">
+            <span class="agg-val sage">0</span>
+            <span class="agg-lbl" data-i18n="agg4">штрафов после внедрения</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="eyebrow" data-i18n="svc_eyebrow">Что я делаю</div>
+        <h2 data-i18n="svc_title">Три направления, где я уже приношу результат</h2>
+        <p data-i18n="svc_lead">Не «сайты вообще». Узкие ниши, в каждой из которых у меня есть боевые кейсы с посчитанным эффектом.</p>
+      </div>
+      <div class="svc-grid" id="svc-grid"></div>
+    </div>
+  </section>
+
+  <!-- WORK -->
+  <section id="work">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="eyebrow" data-i18n="work_eyebrow">Избранные работы</div>
+        <h2 data-i18n="work_title">8 production-систем. Каждая — с посчитанным эффектом.</h2>
+        <p data-i18n="work_lead">Не пет-проекты, а системы в реальной эксплуатации. Здесь — что было, что стало и на сколько.</p>
+      </div>
+      <div class="work-list" id="work-list"></div>
+    </div>
+  </section>
+
+  <!-- STACK -->
+  <section id="stack">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="eyebrow" data-i18n="stack_eyebrow">Технологии</div>
+        <h2 data-i18n="stack_title">Современный full-stack + AI из коробки</h2>
+      </div>
+      <div class="stack-grid reveal" id="stack-grid"></div>
+    </div>
+  </section>
+
+  <!-- APPROACH -->
+  <section id="approach">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="eyebrow" data-i18n="appr_eyebrow">Как я работаю</div>
+        <h2 data-i18n="appr_title">Полный цикл — от разговора до замера эффекта</h2>
+        <p data-i18n="appr_lead">Одна голова закрывает весь путь. Вам не нужна команда — нужен результат, который можно измерить.</p>
+      </div>
+      <div class="flow reveal" id="flow"></div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="wrap">
+      <div class="cta-box reveal">
+        <div class="eyebrow" style="justify-content:center;margin-bottom:24px" data-i18n="contact_eyebrow">Свободен для проектов</div>
+        <h2 data-i18n-html="contact_title">Есть процесс, который жрёт время? <em>Давайте посчитаем,</em> сколько он стоит.</h2>
+        <p data-i18n="contact_sub">Опишите задачу в паре предложений — вернусь с тем, что можно автоматизировать, за какой срок и с какой экономией.</p>
+        <a href="#" class="btn" id="tg-cta" data-i18n-html="contact_cta" target="_blank" rel="noopener">Написать в Telegram <span class="arw">↗</span></a>
+        <div class="contacts">
+          <a class="contact-chip" id="chip-tg" href="#" target="_blank" rel="noopener"><span class="k">telegram</span> @greyw1l</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <p>© 2026 <span data-i18n="brand">Сабир Мамуров</span> — <span data-i18n="foot_role">AI-специалист / Full-stack</span></p>
+    <p data-i18n="foot_loc">Томск · Удалённо по миру</p>
+  </div>
+</footer>
+
+<script>
+const I18N = {
+  ru:{
+    brand:"Сабир Мамуров",
+    nav_services:"Услуги", nav_work:"Работы", nav_stack:"Стек", nav_approach:"Подход", nav_cta:"Обсудить проект",
+    hero_eyebrow:"AI-специалист · Full-stack · Томск",
+    hero_title:'Строю AI-системы, которые приносят бизнесу <span class="accent">измеримые деньги</span>.',
+    hero_sub:"Full-stack разработчик и AI-специалист полного цикла — от интервью с бизнесом до production и замера экономического эффекта. 8 систем в production за 4 месяца.",
+    hero_cta1:'Обсудить проект <span class="arw">↗</span>', hero_cta2:"Смотреть работы",
+    agg1:"ручного труда", agg2:"быстрее обработка данных", agg3:"найденных потерь в год", agg4:"штрафов после внедрения",
+    svc_eyebrow:"Что я делаю", svc_title:"Три направления, где я уже приношу результат",
+    svc_lead:"Не «сайты вообще». Узкие ниши, в каждой из которых у меня есть боевые кейсы с посчитанным эффектом.",
+    work_eyebrow:"Избранные работы", work_title:"8 production-систем. Каждая — с посчитанным эффектом.",
+    work_lead:"Не пет-проекты, а системы в реальной эксплуатации. Здесь — что было, что стало и на сколько.",
+    stack_eyebrow:"Технологии", stack_title:"Современный full-stack + AI из коробки",
+    appr_eyebrow:"Как я работаю", appr_title:"Полный цикл — от разговора до замера эффекта",
+    appr_lead:"Одна голова закрывает весь путь. Вам не нужна команда — нужен результат, который можно измерить.",
+    contact_eyebrow:"Свободен для проектов",
+    contact_title:'Есть процесс, который жрёт время? <em>Давайте посчитаем,</em> сколько он стоит.',
+    contact_sub:"Опишите задачу в паре предложений — вернусь с тем, что можно автоматизировать, за какой срок и с какой экономией.",
+    contact_cta:'Написать в Telegram <span class="arw">↗</span>',
+    foot_role:"AI-специалист / Full-stack", foot_loc:"Томск · Удалённо по миру",
+    now:"сейчас"
+  },
+  en:{
+    brand:"Sabir Mamurov",
+    nav_services:"Services", nav_work:"Work", nav_stack:"Stack", nav_approach:"Approach", nav_cta:"Start a project",
+    hero_eyebrow:"AI Specialist · Full-stack · Tomsk",
+    hero_title:'I build AI systems that earn businesses <span class="accent">measurable money</span>.',
+    hero_sub:"Full-stack developer and end-to-end AI specialist — from the business interview to production and a measured economic result. 8 systems shipped to production in 4 months.",
+    hero_cta1:'Start a project <span class="arw">↗</span>', hero_cta2:"See the work",
+    agg1:"manual labour removed", agg2:"faster data processing", agg3:"in losses uncovered / year", agg4:"fines after launch",
+    svc_eyebrow:"What I do", svc_title:"Three areas where I already deliver results",
+    svc_lead:"Not “websites in general.” Narrow niches — each backed by real, shipped cases with a measured effect.",
+    work_eyebrow:"Selected work", work_title:"8 production systems. Each with a measured result.",
+    work_lead:"Not side projects — systems in real operation. Here's what it was, what it became, and by how much.",
+    stack_eyebrow:"Technology", stack_title:"A modern full-stack with AI built in",
+    appr_eyebrow:"How I work", appr_title:"End to end — from the conversation to the measured result",
+    appr_lead:"One person covers the whole path. You don't need a team — you need a result you can measure.",
+    contact_eyebrow:"Available for projects",
+    contact_title:'Got a process eating your time? <em>Let’s measure</em> what it actually costs.',
+    contact_sub:"Describe the task in a couple of sentences — I'll come back with what can be automated, in what timeframe, and the savings.",
+    contact_cta:'Message on Telegram <span class="arw">↗</span>',
+    foot_role:"AI Specialist / Full-stack", foot_loc:"Tomsk · Remote worldwide",
+    now:"now"
+  }
+};
+
+const SERVICES = [
+  {
+    num:"S/01",
+    title:{ru:"Автоматизация для селлеров WB / Ozon",en:"Automation for WB / Ozon sellers"},
+    desc:{ru:"AI обрабатывает отзывы, аналитику и рекламации без ручного обхода кабинетов. Ловим дефекты партии раньше, чем прилетит штраф.",en:"AI handles reviews, analytics and complaints without manually crawling seller dashboards. Catch batch defects before a fine ever lands."},
+    tags:["WB / Ozon API","GPT-4o","Kanban","Дашборд"]
+  },
+  {
+    num:"S/02",
+    title:{ru:"AI-автоматизация процессов",en:"AI process automation"},
+    desc:{ru:"Найду рутину в вашем процессе и уберу её через AI. Замерю экономию до и после — как в каждом моём проекте.",en:"I find the routine in your process and remove it with AI. I measure the savings before and after — like in every project I ship."},
+    tags:["LLM-пайплайны","RAG","Telegram","Интеграции"]
+  },
+  {
+    num:"S/03",
+    title:{ru:"Сайты и веб-платформы под ключ",en:"Sites & web platforms, turnkey"},
+    desc:{ru:"Быстрые мультиязычные сайты, дашборды и внутренние инструменты. Production-качество и безопасность из коробки.",en:"Fast multilingual sites, dashboards and internal tools. Production quality and security out of the box."},
+    tags:["Next.js 16","i18n","SSR","Auth / RBAC"]
+  }
+];
+
+const PROJECTS = [
+  {
+    name:"HR Assistant",
+    ver:"v3.40.2",
+    badge:{txt:{ru:"в production",en:"in production"},soon:false},
+    kicker:{ru:"AI-экосистема найма",en:"End-to-end hiring AI"},
+    desc:{ru:"Единая система полного цикла найма: панель рекрутера, портал сотрудника и публичный карьерный сайт. AI извлекает данные из PDF/DOCX, оценивает соответствие 0–100% и ранжирует Топ-50. RBAC из 6 ролей, двусторонняя синхронизация с hh.ru и Bitrix24, КЭДО.",en:"One system for the full hiring cycle: recruiter panel, employee portal and public careers site. AI extracts data from PDF/DOCX, scores fit 0–100% and ranks the Top-50. 6-role RBAC, two-way sync with hh.ru and Bitrix24, paperless HR docs."},
+    hero:{from:{ru:"15 мин",en:"15 min"},to:{ru:"10 сек",en:"10 sec"},delta:"×90",cap:{ru:"обработка одного резюме",en:"per résumé processed"}},
+    metrics:[
+      {v:"3 дня → 2 мин",l:{ru:"согласование заявлений",en:"approval of requests"}},
+      {v:"×3",l:{ru:"быстрее закрытие вакансий",en:"faster time-to-hire"}},
+      {v:"60+",l:{ru:"релизов · 18+ метрик на дашборде",en:"releases · 18+ dashboard metrics"}}
+    ],
+    stack:["FastAPI","Python 3.11","PostgreSQL 16","React 18","GPT-4o"]
+  },
+  {
+    name:"Siberian Upgrade",
+    ver:"",
+    badge:{txt:{ru:"в production",en:"in production"},soon:false},
+    kicker:{ru:"Калькулятор упаковки",en:"Packaging optimiser"},
+    desc:{ru:"Оптимизация упаковки в гофроящики: 347 товаров × 15 типоразмеров. Алгоритмическое ядро на TypeScript (36 unit-тестов) перебирает 6 ориентаций × 15 ящиков за миллисекунды. PDF-отчёт, светофор приоритетов, интеграция с Google Sheets.",en:"Corrugated-box packing optimiser: 347 products × 15 sizes. A TypeScript core (36 unit tests) evaluates 6 orientations × 15 boxes in milliseconds. PDF report, priority traffic-light, Google Sheets integration."},
+    hero:{from:{ru:"не считалось",en:"never measured"},to:{ru:"34,1 млн ₽/год",en:"₽34.1M / yr"},delta:{ru:"найдено",en:"found"},cap:{ru:"потерь на «воздухе» по 337 SKU",en:"of “shipping air” losses across 337 SKU"}},
+    metrics:[
+      {v:"627 тыс. ₽/год",l:{ru:"немедленная защищаемая экономия",en:"immediate defensible savings"}},
+      {v:"2,25 млн ₽/год",l:{ru:"потенциал по Топ-10 «красных» SKU",en:"upside on the top-10 “red” SKU"}},
+      {v:"×300+",l:{ru:"анализ SKU: 5–15 мин → 1–2 сек",en:"per-SKU analysis: 5–15 min → 1–2 sec"}}
+    ],
+    stack:["Next.js 16","Prisma 7","TypeScript","vitest","Google Sheets"]
+  },
+  {
+    name:"Siberian Feedback",
+    ver:"v0.7.0",
+    badge:{txt:{ru:"в production",en:"in production"},soon:false},
+    kicker:{ru:"Агрегатор отзывов WB / Ozon",en:"WB / Ozon review aggregator"},
+    desc:{ru:"Автосинхронизация с Wildberries и Ozon, единая база 28 600 отзывов за 5 лет. Двухэтапная AI-классификация (ключевые слова → GPT-4o-mini) по 10 категориям. Воронка рекламаций Kanban, RBAC из 4 ролей, дашборд руководителя.",en:"Auto-sync with Wildberries and Ozon into one base of 28,600 reviews over 5 years. Two-stage AI classification (keywords → GPT-4o-mini) across 10 categories. Kanban complaint funnel, 4-role RBAC, executive dashboard."},
+    hero:{from:{ru:"30–40 ч/проход",en:"30–40 h / pass"},to:{ru:"97% без человека",en:"97% hands-off"},delta:"27856 / 28600",cap:{ru:"потока обрабатывает AI",en:"of the flow handled by AI"}},
+    metrics:[
+      {v:"−8–15 ч/мес",l:{ru:"нагрузка отдела качества",en:"quality team workload"}},
+      {v:"4.54 / 783 SKU",l:{ru:"защита среднего рейтинга",en:"average rating protected"}},
+      {v:{ru:"ранний сигнал",en:"early signal"},l:{ru:"о дефекте партии",en:"of a batch defect"}}
+    ],
+    stack:["Next.js 16","Prisma","SQLite","GPT-4o-mini","cron"]
+  },
+  {
+    name:"Vkusvill Auto-Check",
+    ver:"",
+    badge:{txt:{ru:"в production",en:"in production"},soon:false},
+    kicker:{ru:"AI-гейткипер отгрузок",en:"AI shipment gatekeeper"},
+    desc:{ru:"100% автоматическая проверка всех полей штрихкода и даты перед сохранением и печатью для отгрузок в ВкусВилл. Автоматическая разметка халяльной продукции. Человеческий фактор устранён полностью.",en:"100% automated validation of every barcode and date field before saving and printing for VkusVill shipments. Automatic halal labelling. Human error fully removed."},
+    hero:{from:{ru:"штрафы + ручная сверка",en:"fines + manual checks"},to:"0",delta:{ru:"штрафов",en:"fines"},cap:{ru:"после внедрения",en:"since launch"}},
+    metrics:[
+      {v:"~30 000 ₽",l:{ru:"защита за каждый предотвращённый инцидент",en:"protected per prevented incident"}},
+      {v:"100%",l:{ru:"полей проверяется автоматически",en:"of fields validated automatically"}}
+    ],
+    stack:["Next.js 16","Prisma 7"]
+  },
+  {
+    name:"Rezograf",
+    ver:"v1.0.2",
+    badge:{txt:{ru:"в production",en:"in production"},soon:false},
+    kicker:{ru:"Веб-печать этикеток",en:"Web label printing"},
+    desc:{ru:"Полная замена десктопного BarTender: печать этикеток для термопринтеров в любом браузере. Единая база на 2 740 товаров, авто-вёрстка, математически точные EAN-13 / EAN-8 / ITF-14 / Code128 по ГОСТу.",en:"A full replacement for desktop BarTender: thermal-printer labels in any browser. One base of 2,740 products, auto-layout, mathematically exact EAN-13 / EAN-8 / ITF-14 / Code128 per GOST."},
+    hero:{from:{ru:"лицензия BarTender",en:"BarTender licence"},to:{ru:"0,1 сек",en:"0.1 sec"},delta:"×3–8",cap:{ru:"генерация этикетки",en:"per label generated"}},
+    metrics:[
+      {v:"−2 мин",l:{ru:"на каждую смену оператора",en:"per operator shift"}},
+      {v:{ru:"снята",en:"removed"},l:{ru:"лицензионная зависимость",en:"licence dependency"}}
+    ],
+    stack:["Next.js 16","Prisma 7","SQLite","Puppeteer","Sharp (C++)"]
+  },
+  {
+    name:"TG Helper",
+    ver:"",
+    badge:{txt:{ru:"в production",en:"in production"},soon:false},
+    kicker:{ru:"Локальный AI для Telegram",en:"Local AI for Telegram"},
+    desc:{ru:"Обработка Telegram-потоков: умные сводки, автотрекинг задач, визуальный конструктор триггеров (AND/OR). Доступ к 400+ AI-моделям через OpenRouter. Работает изолированно на ПК, без внешних серверов.",en:"Processes Telegram streams: smart summaries, automatic task tracking, a visual trigger builder (AND/OR). Access to 400+ AI models via OpenRouter. Runs isolated on the machine, no external servers."},
+    hero:{from:{ru:"1000+ сообщений/день",en:"1000+ msgs / day"},to:{ru:"1–2 часа",en:"1–2 hours"},delta:{ru:"экономии/день",en:"saved / day"},cap:{ru:"на чтении чатов",en:"of chat reading"}},
+    metrics:[
+      {v:"400+",l:{ru:"AI-моделей через OpenRouter",en:"AI models via OpenRouter"}},
+      {v:{ru:"изолированно",en:"fully local"},l:{ru:"без внешних серверов",en:"no external servers"}}
+    ],
+    stack:["FastAPI","Celery","Telethon (MTProto)","PostgreSQL 16"]
+  },
+  {
+    name:"cedartaste.eu",
+    ver:"",
+    badge:{txt:{ru:"в production",en:"live"},soon:false},
+    kicker:{ru:"Мультиязычный лендинг · выход в EU",en:"Multilingual landing · EU launch"},
+    desc:{ru:"Выход на европейский рынок: 6 языков одним кодом (en/de/fr/it/cs/ru), каждый в своём JSON-словаре. Полная EU-санитизация контента, премиальный сторителлинг, контактная форма. SSR + статика, загрузка 1,5–2,5 с.",en:"A European market launch: 6 languages from one codebase (en/de/fr/it/cs/ru), each in its own JSON dictionary. Full EU content sanitisation, premium storytelling, contact form. SSR + static, 1.5–2.5s load."},
+    hero:{from:{ru:"агентство ~300–500 тыс. ₽",en:"agency ~₽300–500K"},to:{ru:"in-house 40–60 ч",en:"in-house 40–60 h"},delta:{ru:"экономия",en:"saved"},cap:{ru:"vs агентство, на 6 языков",en:"vs an agency, across 6 languages"}},
+    metrics:[
+      {v:"3–7 дней → 5–30 мин",l:{ru:"контент-правка на всех языках",en:"content edits across all languages"}},
+      {v:"×10–15",l:{ru:"быстрее выход в новый язык-рынок",en:"faster entry to a new language market"}}
+    ],
+    stack:["Next.js 16.2","React 19","Tailwind 4","i18n","App Router"]
+  },
+  {
+    name:"Siberian-Main",
+    ver:"v1.0.0",
+    badge:{txt:{ru:"готов к запуску",en:"ready to launch"},soon:true},
+    kicker:{ru:"Корпоративный SSO-портал",en:"Corporate SSO portal"},
+    desc:{ru:"Один логин + опциональный 2FA TOTP → дашборд показывает только доступные сотруднику системы. RBAC по матрице ролей, Argon2id, rate-limit, account lockout, HSTS + CSP. Bulk-операции, audit log с CSV-export под 152-ФЗ.",en:"One login + optional 2FA TOTP → the dashboard shows only the systems an employee can access. Matrix-based RBAC, Argon2id, rate-limit, account lockout, HSTS + CSP. Bulk operations, audit log with CSV export under 152-FZ."},
+    hero:{from:{ru:"вход −55 ч/мес",en:"logins −55 h/mo"},to:{ru:"~75 тыс. ₽/мес",en:"~₽75K / mo"},delta:{ru:"экономии",en:"saved"},cap:{ru:"прямой экономии при 50 сотрудниках",en:"direct savings at 50 employees"}},
+    metrics:[
+      {v:"12 ч → 1 мин",l:{ru:"onboarding сотрудника",en:"employee onboarding"}},
+      {v:"16 ч → 30 сек",l:{ru:"ИБ-аудит доступов",en:"access security audit"}},
+      {v:"100–300 тыс. ₽",l:{ru:"защита от утечки ПД / инцидент (152-ФЗ)",en:"data-leak protection / incident (152-FZ)"}}
+    ],
+    stack:["Next.js 16","Prisma 7","Auth.js v5","Argon2id","TOTP"]
+  }
+];
+
+const STACK = [
+  {cat:"Frontend",items:["Next.js 16","React 19","TypeScript","Tailwind 4","App Router","SSR"]},
+  {cat:"Backend",items:["FastAPI","Python 3.11","Node.js","PHP · Laravel"]},
+  {cat:"DB / ORM",items:["PostgreSQL 16","SQLite","Prisma 7","Redis 7"]},
+  {cat:"AI / ML",items:["GPT-4o","Claude","Gemini","Llama","OpenRouter","RAG · embeddings"]},
+  {cat:{ru:"Безопасность",en:"Security"},items:["Auth.js v5","Argon2id","RBAC","2FA TOTP","rate-limit","audit log"]},
+  {cat:{ru:"Интеграции",en:"Integrations"},items:["hh.ru OAuth 2.0","Bitrix24","WB / Ozon API","Telegram MTProto","Google Sheets"]},
+  {cat:"DevOps",items:["Docker","pm2","CI/CD","e2e-тесты","worktree"]}
+];
+
+const FLOW = [
+  {n:"01",t:{ru:"Интервью",en:"Interview"},d:{ru:"Разговор с владельцем процесса — где болит и что стоит денег.",en:"A talk with the process owner — where it hurts and what it costs."}},
+  {n:"02",t:{ru:"Архитектура",en:"Architecture"},d:{ru:"Проектирую под масштаб и переиспользование, а не «на коленке».",en:"Designed for scale and reuse, not a throwaway build."}},
+  {n:"03",t:{ru:"Реализация",en:"Build"},d:{ru:"Быстрая разработка на современном AI-стеке.",en:"Fast delivery on a modern AI-first stack."}},
+  {n:"04",t:{ru:"Deploy",en:"Deploy"},d:{ru:"Docker, CI/CD, вывод в production и стабильная работа.",en:"Docker, CI/CD, shipping to production, stable operation."}},
+  {n:"05",t:{ru:"Поддержка",en:"Support"},d:{ru:"Релизы, метрики, реакция на обратную связь.",en:"Releases, metrics, response to feedback."}},
+  {n:"06",t:{ru:"Замер эффекта",en:"Measure"},d:{ru:"Считаю экономию до и после. Цифры, а не обещания.",en:"Savings measured before and after. Numbers, not promises."}}
+];
+
+let lang = localStorage.getItem("lang") || "ru";
+const pick = (v)=> (v && typeof v==="object" && ("ru" in v||"en" in v)) ? (v[lang] ?? v.ru) : v;
+const tags = (arr)=> arr.map(t=>`<span class="tag">${pick(t)}</span>`).join("");
+
+function renderServices(){
+  document.getElementById("svc-grid").innerHTML = SERVICES.map(s=>`
+    <article class="svc reveal">
+      <span class="svc-num mono">${s.num}</span>
+      <h3>${pick(s.title)}</h3>
+      <p>${pick(s.desc)}</p>
+      <div class="svc-tags">${tags(s.tags)}</div>
+    </article>`).join("");
+}
+
+function renderWork(){
+  document.getElementById("work-list").innerHTML = PROJECTS.map((p,i)=>{
+    const idx = String(i+1).padStart(2,"0");
+    const badgeCls = p.badge.soon ? "work-badge soon" : "work-badge";
+    const supp = p.metrics.map(m=>`
+      <div class="lg-line"><span class="v">${pick(m.v)}</span><span class="l">${pick(m.l)}</span></div>`).join("");
+    return `
+    <article class="work reveal">
+      <div class="work-id">
+        <span class="work-index mono">№ ${idx} / 08</span>
+        <span class="work-name">${p.name}${p.ver?` <span class="mono" style="font-size:12px;color:var(--faint)">${p.ver}</span>`:""}</span>
+        <span class="${badgeCls}">${pick(p.badge.txt)}</span>
+      </div>
+      <div class="work-body">
+        <div class="kicker">${pick(p.kicker)}</div>
+        <p>${pick(p.desc)}</p>
+        <div class="work-stack">${tags(p.stack)}</div>
+      </div>
+      <div class="ledger">
+        <div class="ledger-hero">
+          <div class="from-to">
+            <span class="lg-from mono">${pick(p.hero.from)}</span>
+            <span class="lg-arrow">→</span>
+            <span class="lg-to">${pick(p.hero.to)}</span>
+            <span class="lg-delta">${pick(p.hero.delta)}</span>
+          </div>
+          <div class="lg-cap">${pick(p.hero.cap)}</div>
+        </div>
+        ${supp}
+      </div>
+    </article>`;
+  }).join("");
+}
+
+function renderStack(){
+  document.getElementById("stack-grid").innerHTML = STACK.map(s=>`
+    <div class="stack-row">
+      <div class="stack-cat">${pick(s.cat)}</div>
+      <div class="stack-items">${tags(s.items)}</div>
+    </div>`).join("");
+}
+
+function renderFlow(){
+  document.getElementById("flow").innerHTML = FLOW.map(f=>`
+    <div class="flow-step">
+      <div class="n mono">${f.n}</div>
+      <h4>${pick(f.t)}</h4>
+      <p>${pick(f.d)}</p>
+    </div>`).join("");
+}
+
+function applyStatic(){
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-i18n]").forEach(el=>{
+    const k = el.getAttribute("data-i18n"); if(I18N[lang][k]!=null) el.textContent = I18N[lang][k];
+  });
+  document.querySelectorAll("[data-i18n-html]").forEach(el=>{
+    const k = el.getAttribute("data-i18n-html"); if(I18N[lang][k]!=null) el.innerHTML = I18N[lang][k];
+  });
+  document.title = lang==="ru"
+    ? "Сабир Мамуров — AI-системы, которые приносят измеримые деньги"
+    : "Sabir Mamurov — AI systems that earn measurable money";
+}
+
+function renderAll(){
+  applyStatic(); renderServices(); renderWork(); renderStack(); renderFlow();
+  observeReveals();
+}
+
+// language toggle
+document.querySelectorAll(".lang button").forEach(b=>{
+  b.addEventListener("click",()=>{
+    lang = b.dataset.lang; localStorage.setItem("lang",lang);
+    document.querySelectorAll(".lang button").forEach(x=>x.classList.toggle("active",x.dataset.lang===lang));
+    renderAll();
+  });
+});
+document.querySelectorAll(".lang button").forEach(x=>x.classList.toggle("active",x.dataset.lang===lang));
+
+// header scroll state
+const hdr=document.querySelector("header");
+addEventListener("scroll",()=>hdr.classList.toggle("scrolled",scrollY>20),{passive:true});
+
+// scroll reveal
+let io;
+function observeReveals(){
+  if(io) io.disconnect();
+  io=new IntersectionObserver((es)=>es.forEach(e=>{ if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target);} }),{threshold:.12,rootMargin:"0px 0px -8% 0px"});
+  document.querySelectorAll(".reveal:not(.in)").forEach(el=>io.observe(el));
+}
+
+// contact link (edit this line with your Telegram handle, no @)
+const TG_HANDLE="greyw1l";
+const TG_URL="https://t.me/"+TG_HANDLE;
+document.getElementById("tg-cta").href=TG_URL;
+document.getElementById("chip-tg").href=TG_URL;
+document.getElementById("chip-tg").innerHTML='<span class="k">telegram</span> @'+TG_HANDLE;
+
+renderAll();
+</script>
+</body>
+</html>

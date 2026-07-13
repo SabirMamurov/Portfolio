@@ -1,0 +1,4 @@
+# Local-only files — not needed on the static host
+server.js
+.claude/
+README.md
