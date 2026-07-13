@@ -8,3 +8,4 @@ npm-debug.log*
 
 # Local dev / editor
 .vercel
+server.js
